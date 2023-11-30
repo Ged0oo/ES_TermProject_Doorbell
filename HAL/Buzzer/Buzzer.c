@@ -65,6 +65,8 @@ volatile uint8 gTempo;
 volatile uint8 gActMelody;
 /*
  * This function is responsible for playing melody identified by Melody_ID
+ * end of the melody has been reached if returned 1
+ * it returns 0 if the melody doesn't end
  */
 uint8 PlayMelody(uint8 Melody_ID)
 {

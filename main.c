@@ -41,15 +41,28 @@ void main(void)
     	// check the button state
     	if(ButtonState == 1)
     	{
-    		// let the buzzer play if the button is pressed
-    		melodyRET = PlayMelody(currentMelody);
-
-    		// if returns 1, so the current melody is finished
-    		if(melodyRET == 1)
+    		// Play the melody and wait for it to finish
+    		melodyRET = 0;
+    		do
     		{
-    			_delay_ms(200);
-    			currentMelody += 1;
+    			// read the button state
+    			ButtonState = READ_BIT(PINB, PINB2);
+    			// breaks the loop if the button is not pressed
+    			if(ButtonState  == 0)
+    				break;
+
+    			// Play the current melody until finished
+    			melodyRET = PlayMelody(currentMelody);
+
+    			if (melodyRET == 1)
+    			{
+    				_delay_ms(200);
+    				currentMelody += 1;
+    				if (currentMelody >= LAST_MELODY)
+    				     currentMelody = 0;
+    			}
     		}
+    		while(melodyRET == 0);
     	}
     	else if(ButtonState == 0)
     	{
