@@ -1,27 +1,35 @@
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 #include "HAL/Buzzer/Buzzer.h"
 #define F_CPU	8000000UL
 
-void main(void)
+volatile uint8 gOctave = 0;
+volatile uint8 gTempo;
+volatile uint8 gActMelody = 0;
+
+// set the intial button state as LOW
+volatile uint8_t ButtonState = 0;
+
+ISR(INT0_vect)
 {
-	// the current melody to be played upon press
-	uint8_t currentMelody = 2;
+	gActMelody++;
+}
 
-	// stored the return value from the playMelody API
-	uint8_t melodyRET = 1;
+void ConfigureExternalInterrupt()
+{
+    // Set INT0/PD2 as input
+    DDRD &= ~(1 << DDD2);
 
-	// set PIND5 as output for the buzzer
-	DDRD |= (1<<PIND5);
+    // Enable INT0
+    GICR |= (1 << INT0);
 
-	// set PINB2 as input for the push button
-	DDRB &= ~(1<<PINB2);
+    // Trigger INT0 on falling edge
+    MCUCR |= (1 << ISC01);
+}
 
-	// set the intial button state as LOW
-	uint8_t ButtonState = 1;
-
-	//timer1InitCompare()
-
+void ConfigureTimer()
+{
 	//sets the Timer/Counter Control Register A to 0
 	//indicating no special modes or configurations for the output compare pins
 	TCCR1A = 0x00;
@@ -32,37 +40,31 @@ void main(void)
 
 	//initializes the Timer/Counter 1 register to 0
 	TCNT1 = 0x00;
+}
+
+
+void main(void)
+{
+	sei();
+	ConfigureExternalInterrupt();
+	ConfigureTimer();
+
+	// set PIND5 as output for the buzzer
+	DDRD |= (1<<PIND5);
+
+	// set PINB2 as input for the push button
+	DDRB &= ~(1<<PIND2);
+
+	uint8_t retMelody = 0;
 
     while (1)
     {
     	// first read the button state
-    	ButtonState = READ_BIT(PINB, PINB2);
+    	ButtonState = READ_BIT(PIND, PIND2);
 
-    	// check the button state
     	if(ButtonState == 1)
     	{
-    		// Play the melody and wait for it to finish
-    		melodyRET = 0;
-    		do
-    		{
-    			// read the button state
-    			ButtonState = READ_BIT(PINB, PINB2);
-    			// breaks the loop if the button is not pressed
-    			if(ButtonState  == 0)
-    				break;
-
-    			// Play the current melody until finished
-    			melodyRET = PlayMelody(currentMelody);
-
-    			if (melodyRET == 1)
-    			{
-    				_delay_ms(200);
-    				currentMelody += 1;
-    				if (currentMelody >= LAST_MELODY)
-    				     currentMelody = 0;
-    			}
-    		}
-    		while(melodyRET == 0);
+    		retMelody = PlayMelody(gActMelody);
     	}
     	else if(ButtonState == 0)
     	{

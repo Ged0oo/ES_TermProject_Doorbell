@@ -134,7 +134,7 @@ static void EXI_SET_EDGE(const ST_externalInterrupt_t* interrupt)
 	}
 }
 
-
+/*
 ISR(INT0_vect)
 {
 	if(INT0_fptr != NULL)
@@ -142,7 +142,7 @@ ISR(INT0_vect)
 		INT0_fptr();
 	}
 }
-
+*/
 
 ISR(INT1_vect)
 {

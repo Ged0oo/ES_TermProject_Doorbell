@@ -60,9 +60,11 @@ const unsigned char    Melody019[64] = {25,4,193,4,198,16,193,8,195,8,171,4,168,
 const unsigned char    Melody020[96] = {31,136,195,16,197,8,200,8,200,16,197,16,195,16,170,16,172,16,195,16,172,8,197,16,195,16,172,16,170,16,172,8,170,16,170,16,171,16,172,16,195,16,197,16,195,4,200,8,192,16,195,16,197,16,195,8,200,8,200,16,197,16,195,16,170,16,172,16,195,16,172,8,197,16,195,16,172,16,170,16,172,8,195,16,195,16,195,16,199,16,202,8,198,4,195,0};
 
 
-volatile uint8 gOctave = 0;
-volatile uint8 gTempo;
-volatile uint8 gActMelody;
+extern uint8 gOctave;
+extern uint8 gTempo;
+extern uint8 gActMelody;
+
+
 /*
  * This function is responsible for playing melody identified by Melody_ID
  * end of the melody has been reached if returned 1
