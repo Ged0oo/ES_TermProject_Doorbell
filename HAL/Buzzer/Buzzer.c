@@ -1,6 +1,10 @@
 #include "Buzzer.h"
 
-
+/*
+ * Each element in the array represents a specific pitch or frequency associated with a musical note
+ * used in conjunction with the note information extracted from the melody data
+ * determine the pitch or frequency of the notes to be played during the melody
+ */
 const unsigned short Notes[] =
 {
 	NOTE_P,
@@ -56,48 +60,88 @@ const unsigned char    Melody019[64] = {25,4,193,4,198,16,193,8,195,8,171,4,168,
 const unsigned char    Melody020[96] = {31,136,195,16,197,8,200,8,200,16,197,16,195,16,170,16,172,16,195,16,172,8,197,16,195,16,172,16,170,16,172,8,170,16,170,16,171,16,172,16,195,16,197,16,195,4,200,8,192,16,195,16,197,16,195,8,200,8,200,16,197,16,195,16,170,16,172,16,195,16,172,8,197,16,195,16,172,16,170,16,172,8,195,16,195,16,195,16,199,16,202,8,198,4,195,0};
 
 
-
 volatile uint8 gOctave = 0;
 volatile uint8 gTempo;
 volatile uint8 gActMelody;
-volatile uint8 ChrIndex = 0x00;
-
-
+/*
+ * This function is responsible for playing melody identified by Melody_ID
+ */
 uint8 PlayMelody(uint8 Melody_ID)
 {
+	uint8 ChrIndex = 0x00;
+
+	// This holds the duration of the current note
 	volatile uint16 duration = 0;
+
+	/*
+	 * Represents the octave of the current note
+	 * octave is the interval between one musical pitch and another with half or double its frequency
+	 * It is set based on the information extracted from the melody data
+	 */
 	volatile uint8 octave = 0;
+
+	/*
+	 * Represents the frequency of the current note
+	 * It is set based on the information extracted from the melody data
+	 * The frequency is used to configure Timer1 for sound generation
+	 */
 	volatile uint16 note = 0;
+
+	// might suggest to be a rest ?!
 	volatile uint8 van_nyujt = 0;
+
+	/*
+	 * temp variable to store a byte of data retrieved from the melody
+	 * It holds information about the note, including its duration,
+	 * whether it's a rest, the note value, and the octave.
+	 */
 	volatile uint8 ch;
 
+	// hold current melody id
 	gActMelody = Melody_ID;
+
+	// Checks if the given Melody_ID is greater than or equal to LAST_MELODY
 	if (Melody_ID >= LAST_MELODY)
 	{
+		// if true it resets the melody, should wrap around to the beginning.
 		Melody_ID = 0;
+
+		//Resets the index to the starting position for the melody data.
 		ChrIndex = 0x00;
 		gActMelody = 0;
 	}
 
+	// initializing the gTempo when the melody is just starting
 	if(ChrIndex == 0)
 	{
+		// ChrIndex is incremented to move on to the next piece of data in the melody.
 		gTempo = GetByteFromData(ChrIndex++);
 	}
 
+	// ch is to store byte of data which retrieved from the melody
 	ch = GetByteFromData(ChrIndex++);
 
+	// extracting the duration of a musical note
 	duration = ch & 0b00111111;
 	van_nyujt = ch & 0b10000000;
 
+	// extracting another byte of data from the melody
 	ch = GetByteFromData(ChrIndex++);
+
+	// extracts information about the pitch then,
+	// access an element from Notes which corresponds to it
 	note = pgm_read_byte(Notes+(ch & 0b00001111));
 
+	// extracts the octave information from the byte of data from melody
 	octave = (ch & 0b11100000)>>5 ;
 
 	PlayNote(note, octave, duration);
 
+	// checks if the next byte of data in the melody sequence is 0
 	if (GetByteFromData(ChrIndex) == 0)
 	{
+		// Resets the ChrIndex like indicating that
+		// end of the melody has been reached
 		ChrIndex = 0x00;
 		return 1;
 	}
@@ -105,28 +149,66 @@ uint8 PlayMelody(uint8 Melody_ID)
 }
 
 
+/*
+ * This function plays the musical note.
+ * It adjusts the note frequency based on the octave.
+ * align with the range of octaves in a musical context.
+ * Octave numbering in music often starts at 1,
+ * and each increase in octave number represents a doubling of frequency
+ */
 void PlayNote(uint8 note, uint8 octave, uint16 duration)
 {
-	uint16 adur;
+	// Changing the octave involves doubling or halving the frequency of the note
+	// Shifting to a higher octave means doubling the frequency
+	// Shifting to a lower octave means halving the frequency.
 	switch (octave)
 	{
 		case 4 : break;
 		case 5 : note = note>>1; break;
 		case 6 : note = note>>2; break;
-		case 7 : note = note>>4; break;
+		case 7 : note = note>>3; break;
 	}
-	adur = (60000/gTempo/duration);
 
-	if (note==0)
+
+	/*
+	 * 60000 used to convert the tempo from beats per minute (BPM) to milliseconds per beat
+	 * gTempo holds the tempo information.
+	 * 60000 / gTempo calculates the duration of one beat in milliseconds based on the tempo
+	 * The duration is typically expressed as a fraction of a whole note (e.g., quarter note, eighth note)
+	 */
+	uint16 adur = (60000/gTempo/duration);
+
+	// playing a musical note based on the calculated duration (adur) and frequency (note).
+	if (note == 0)
+	{
+		/*
+		 * If note is 0, it means the musical note is a rest (no sound),
+		 * and the program introduces a delay using _delay_ms(adur)
+		 * This delay represents the duration of the rest.
+		 */
 		_delay_ms(adur);
+	}
+	// If note is not 0, it means there's an actual musical note to be played
 	else
 	{
-		TCNT1 = 0;				//timer0Clear();
-		OCR1A = note;			//timer0SetCompare(note);
+		// resets Timer1's counter to 0.
+		TCNT1 = 0;
 
-		TCCR1A = (0 << COM1A1) | (1 << COM1A0);		//timer0CCPOn();
+		// sets the Output Compare Register (OCR1A) to the value of note
+		// OCR1A value determines the frequency of the waveform generated by Timer1.
+		OCR1A = note;
+
+		// This sets the Timer/Counter1 Control Register A (TCCR1A)
+		// to enable the Toggle Compare Match (COM1A0) bit.
+		TCCR1A = (0 << COM1A1) | (1 << COM1A0);
+
+		// introduces a delay of adur milliseconds, representing
+		// the duration for which the musical note should be played.
 		_delay_ms(adur);
-		TCCR1A = 0x00;					//timer0CCPOff();
+
+		// After the delay, this turns off the PWM signal
+		// generation by clearing the TCCR1A register.
+		TCCR1A = 0x00;
 	}
 }
 
