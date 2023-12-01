@@ -6,6 +6,10 @@
 /*                   section: data type declaration                     */
 /************************************************************************/
 
+#include <avr/io.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+
 
 typedef		unsigned char			uint8;
 typedef		unsigned short			uint16;

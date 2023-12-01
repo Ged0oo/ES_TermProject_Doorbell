@@ -3,10 +3,7 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
-#include <avr/pgmspace.h>
 #include <avr/interrupt.h>
-#include <avr/sleep.h>
-
 #include "../../MCAL/StdTypes.h"
 #include "../../MCAL/MemoryMap.h"
 #include "Melody.h"
