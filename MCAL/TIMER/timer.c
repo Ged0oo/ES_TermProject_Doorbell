@@ -1,6 +1,5 @@
 #include "timer.h"
 
-
 void ConfigureTimer()
 {
 	//sets the Timer/Counter Control Register A to 0
