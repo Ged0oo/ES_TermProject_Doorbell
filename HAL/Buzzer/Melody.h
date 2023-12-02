@@ -25,6 +25,7 @@
 }))
 
 
+extern const unsigned char    Melody000[54] ;
 
 //PinkPanther
 extern const unsigned char    Melody001[54];

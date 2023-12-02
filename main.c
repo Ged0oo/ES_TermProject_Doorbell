@@ -19,13 +19,17 @@ void main(void)
 	ConfigureTimer();
 	ConfugureIOPins();
 	ConfigureExternalInterrupt();
+
 	uint8_t retMelody = 0;
 	uint8_t ButtonState = 0;
+
     while (1)
     {
     	ButtonState = READ_BIT(PIND, PIND2);
+
     	if(ButtonState == 1)
     		retMelody = PlayMelody(gActMelody);
+
     	else if(ButtonState == 0)
     		{TCCR1A = 0x00; OCR1A = 0x00;}
     }
