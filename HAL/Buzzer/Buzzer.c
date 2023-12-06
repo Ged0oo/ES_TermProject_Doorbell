@@ -26,10 +26,8 @@ extern uint8 gActMelody;
 
 /*
  * This function is responsible for playing melody identified by Melody_ID
- * end of the melody has been reached if returned 1
- * it returns 0 if the melody doesn't end
  */
-uint8 PlayMelody(uint8 Melody_ID)
+void PlayMelody(uint8 Melody_ID)
 {
 	uint8 ChrIndex = 0x00;
 
@@ -95,16 +93,7 @@ uint8 PlayMelody(uint8 Melody_ID)
 	octave = (ch & 0b11100000)>>5 ;
 
 	PlayNote(note, octave, duration);
-
-	// checks if the next byte of data in the melody sequence is 0
-	if (GetByteFromData(ChrIndex) == 0)
-	{
-		// Resets the ChrIndex like indicating that
-		// end of the melody has been reached
-		ChrIndex = 0x00;
-		return 1;
-	}
-	return 0;
+	return;
 }
 
 

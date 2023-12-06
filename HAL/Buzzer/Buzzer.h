@@ -32,7 +32,7 @@
 #define NOTE_P   	   0
 
 
-uint8 PlayMelody(uint8 Melody_ID);
+void PlayMelody(uint8 Melody_ID);
 void PlayNote(uint8 note, uint8 octave, uint16 duration);
 uint8 GetByteFromData(uint8 index);
 
