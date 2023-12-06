@@ -176,26 +176,26 @@ uint8 GetByteFromData(uint8 index)
 {
 	switch (gActMelody)
 	{
-		case 0: return  pgm_read_byte(Melody001+index); break;
-		case 1: return  pgm_read_byte(Melody002+index); break;
-		case 2: return  pgm_read_byte(Melody003+index); break;
-		case 3: return  pgm_read_byte(Melody004+index); break;
-		case 4: return  pgm_read_byte(Melody005+index); break;
-		case 5: return  pgm_read_byte(Melody006+index); break;
-		case 6: return  pgm_read_byte(Melody007+index); break;
-		case 7: return  pgm_read_byte(Melody008+index); break;
-		case 8: return  pgm_read_byte(Melody009+index); break;
-		case 9: return  pgm_read_byte(Melody010+index); break;
-		case 10: return pgm_read_byte(Melody011+index); break;
-		case 11: return pgm_read_byte(Melody012+index); break;
-		case 12: return pgm_read_byte(Melody013+index); break;
-		case 13: return pgm_read_byte(Melody014+index); break;
-		case 14: return pgm_read_byte(Melody015+index); break;
-		case 15: return pgm_read_byte(Melody016+index); break;
-		case 16: return pgm_read_byte(Melody017+index); break;
-		case 17: return pgm_read_byte(Melody018+index); break;
-		case 18: return pgm_read_byte(Melody019+index); break;
-		case 19: return pgm_read_byte(Melody020+index); break;
+		case 1: return  pgm_read_byte(Melody001+index); break;
+		case 2: return  pgm_read_byte(Melody002+index); break;
+		case 3: return  pgm_read_byte(Melody003+index); break;
+		case 4: return  pgm_read_byte(Melody004+index); break;
+		case 5: return  pgm_read_byte(Melody005+index); break;
+		case 6: return  pgm_read_byte(Melody006+index); break;
+		case 7: return  pgm_read_byte(Melody007+index); break;
+		case 8: return  pgm_read_byte(Melody008+index); break;
+		case 9: return  pgm_read_byte(Melody009+index); break;
+		case 10: return  pgm_read_byte(Melody010+index); break;
+		case 11: return pgm_read_byte(Melody011+index); break;
+		case 12: return pgm_read_byte(Melody012+index); break;
+		case 13: return pgm_read_byte(Melody013+index); break;
+		case 14: return pgm_read_byte(Melody014+index); break;
+		case 15: return pgm_read_byte(Melody015+index); break;
+		case 16: return pgm_read_byte(Melody016+index); break;
+		case 17: return pgm_read_byte(Melody017+index); break;
+		case 18: return pgm_read_byte(Melody018+index); break;
+		case 19: return pgm_read_byte(Melody019+index); break;
+		case 20: return pgm_read_byte(Melody020+index); break;
 		default: break;
 	}
 	return 0;
