@@ -13,12 +13,14 @@ void ConfugureIOPins()
 	DDRB &= ~(1<<PIND2);
 }
 
+ST_externalInterrupt_t exi_0 = {.source = EXI_INT0, .edge = EXI_INT0_GENERATE_INTERRUPT_AT_FALLING_EDGE};
+
 void main(void)
 {
 	sei();
 	ConfigureTimer();
 	ConfugureIOPins();
-	ConfigureExternalInterrupt();
+	EXI_interrupt_init(&exi_0);
 
 	uint8_t retMelody = 0;
 	uint8_t ButtonState = 0;
@@ -26,10 +28,8 @@ void main(void)
     while (1)
     {
     	ButtonState = READ_BIT(PIND, PIND2);
-
     	if(ButtonState == 1)
     		retMelody = PlayMelody(gActMelody);
-
     	else if(ButtonState == 0)
     		{TCCR1A = 0x00; OCR1A = 0x00;}
     }
