@@ -5,6 +5,7 @@
 #include "Melody.h"
 #include "../../MCAL/StdTypes.h"
 #include "../../MCAL/MemoryMap.h"
+#include "../../MCAL/TIMER/timer.h"
 
 
 #define F_CPU	8000000UL

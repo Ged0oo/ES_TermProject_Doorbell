@@ -29,14 +29,8 @@ void main(void)
     {
     	ButtonState = READ_BIT(PIND, PIND2);
     	if(ButtonState == 1)
-    	{
     		retMelody = PlayMelody(gActMelody);
-    	}
-
     	else if(ButtonState == 0)
-    	{
-    		TCCR1A = 0x00;
-    		OCR1A = 0x00;
-    	}
+    		TMR1_SET_OCR1A_VALUE(0);
     }
 }
